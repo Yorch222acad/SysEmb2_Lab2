@@ -1,37 +1,31 @@
+import RPi.GPIO as GPIO
+import time
+import random
+#Para usar el sensor
+# import Adafruit_DHT
+
+led_rojo = 17
+vent = 27
+
 GPIO.setwarnings(False)
-
-PIN_BTN_UP = 19
-PIN_BTN_DOWN = 26
-PIN_OUTS = [0, 5, 6, 13]
-
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(PIN_BTN_UP, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(PIN_BTN_DOWN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-for pin in PIN_OUTS:
-    GPIO.setup(pin, GPIO.OUT)
-    GPIO.output(pin, GPIO.LOW)
-
-counter = 0
-binAnt = -1
-l = [0, 0, 0, 0]
+GPIO.setup(led_rojo, GPIO.OUT)
+GPIO.setup(vent, GPIO.OUT)
 
 while True:
-    if GPIO.input(PIN_BTN_UP) == GPIO.LOW and counter < 15:
-        counter += 1
-        time.sleep(0.2)
-
-    if GPIO.input(PIN_BTN_DOWN) == GPIO.LOW and counter > 0:
-        counter -= 1
-        time.sleep(0.2)
-
-    if counter != binAnt:
-        l = [0, 0, 0, 0]
-        temp = counter
-        for j in range(3, -1, -1):
-            l[j] = temp % 2
-            temp //= 2
-        binAnt = counter
-
-    for idx, pin in enumerate(PIN_OUTS):
-        GPIO.output(pin, GPIO.HIGH if l[idx] else GPIO.LOW)
+	temp = random.randint(5, 25)
+	
+	if temp < 12:
+		GPIO.output(led_rojo, GPIO.HIGH)
+		GPIO.output(vent, GPIO.LOW)
+		print(f"La temperatura es {temp}")
+	elif temp > 20:
+		GPIO.output(vent, GPIO.HIGH)
+		GPIO.output(led_rojo, GPIO.LOW)
+		print(f"La temperatura es {temp}")
+	else:
+		GPIO.output(led_rojo, GPIO.LOW)
+		GPIO.output(vent, GPIO.LOW)
+		print(f"La temperatura es {temp}")
+	
+	time.sleep(4)
