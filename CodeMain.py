@@ -28,40 +28,6 @@ for pin in PinsLed:
     GPIO.output(pin, GPIO.LOW)
 GPIO.setup(Vent, GPIO.OUT)
 
-# BOTON = 5
-# Led1 = 6
-# LED2 = 13
-# #---------------------------
-# PIN_BTN_UP = 19 
-# PIN_BTN_DOWN = 26 
-# PIN_OUTS = [0, 5, 6, 13]
-# #---------------------------
-# led_rojo = 17
-# vent = 27
-# #---------------------------
-# BOTON_1 = 5
-# BOTON_2 = 14
-# Led1 = 19
-# LED2 = 13
-# Led3 = 26
-# Led4 = 6
-
-# GPIO.setup(BOTON, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-# GPIO.setup(PIN_BTN_UP, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-# GPIO.setup(PIN_BTN_DOWN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-# GPIO.setup(BOTON_1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-# GPIO.setup(BOTON_2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-# #------------------------------------------
-# GPIO.setup(Led1, GPIO.OUT)
-# GPIO.setup(LED2, GPIO.OUT)
-# #------------------------------------------
-# GPIO.setup(led_rojo, GPIO.OUT)
-# GPIO.setup(vent, GPIO.OUT)
-# GPIO.setup(Led1, GPIO.OUT)
-# GPIO.setup(LED2, GPIO.OUT)
-# GPIO.setup(Led3, GPIO.OUT)
-# GPIO.setup(Led4, GPIO.OUT)
-
 #===================================================================
 
 estado = 1
