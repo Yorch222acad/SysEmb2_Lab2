@@ -6,22 +6,25 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
 # Pines
-Btn1 = 25  # Cambiar estado
-Btn2 = 8   # Cambiar LED
-Btn3 = 7   # Aumentar tiempo
-Btn4 = 1   # Seleccionar laboratorio
-PinsLed = [0, 5, 6, 13]  # LEDs
+Btn1 = 8
+Btn2 = 7
+Btn3 = 1   # Seleccionar laboratorio
+#-----------------------------------
+Led1 = 0
+Led2 = 5
+Led3 = 6
+Led4 = 13
+#-----------------------------------
+PinsLed = [Led1, Led2, Led3, Led4]
+PinsBtn = [Btn1, Btn2, Btn3]
 Vent = 27
 
 # Configuracion pines
-PinsBtn = [Btn1, Btn2, Btn3, Btn4]
 for pin in PinsBtn:
     GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 for pin in PinsLed:
     GPIO.setup(pin, GPIO.OUT)
 GPIO.setup(Vent, GPIO.OUT)
-
-Led1, Led2, Led3, Led4 = PinsLed
 
 # Variables globales
 estado = 1
@@ -30,7 +33,7 @@ tiempo = 1
 counter = 0
 binAnt = -1
 l = [0, 0, 0, 0]
-last_states = {Btn1: 1, Btn2: 1, Btn3: 1, Btn4: 1}
+last_states = {Btn1: 1, Btn2: 1, Btn3: 1}
 
 # ==================== Funciones botones ====================
 def leer_botones():
@@ -38,15 +41,12 @@ def leer_botones():
 
     # === BOTON 1 ===
     if GPIO.input(Btn1) == GPIO.LOW and last_states[Btn1] == 1:
-        estado += 1
-        if estado > 4:
-            estado = 1
-        print(f"Estado actual: {estado}")
-    last_states[Btn1] = GPIO.input(Btn1)
-
-    # === BOTON 2 ===
-    if GPIO.input(Btn2) == GPIO.LOW and last_states[Btn2] == 1:
-        if opcion == 2 and counter > 0:
+        if opcion==1:
+            estado += 1
+            if estado > 4:
+                estado = 1
+            print(f"Estado actual: {estado}")
+        elif opcion==2 and counter>0:
             counter -= 1
             print(f"Counter = {counter}")
         elif opcion==4:
@@ -55,24 +55,27 @@ def leer_botones():
                 estado_led = 1
             tiempo = 1
             print(f"Estado de LED: {estado_led}")
+        
+    last_states[Btn1] = GPIO.input(Btn1)
+
+    # === BOTON 2 ===
+    if GPIO.input(Btn2) == GPIO.LOW and last_states[Btn2] == 1:
+        if opcion == 2 and counter < 15:
+            counter += 1
+            print(f"Counter = {counter}")
+        elif opcion==4:
+            tiempo+=1
+            print(f"Tiempo aumentado a: {tiempo}")
     last_states[Btn2] = GPIO.input(Btn2)
 
     # === BOTON 3 ===
     if GPIO.input(Btn3) == GPIO.LOW and last_states[Btn3] == 1:
-        if opcion == 2 and counter < 15:
-            counter += 1
-            print(f"Counter = {counter}")
-        elif opcion ==4:
-            tiempo += 1
-            print(f"Tiempo aumentado a: {tiempo}")
-    last_states[Btn3] = GPIO.input(Btn3)
-
-    # === BOTON 4 ===
-    if GPIO.input(Btn4) == GPIO.LOW and last_states[Btn4] == 1:
         opcion = int(input("Ingrese el laboratorio que quiere ejecutar (1-4): "))
         print(f"Seleccionaste laboratorio {opcion}")
-    last_states[Btn4] = GPIO.input(Btn4)
+    last_states[Btn3] = GPIO.input(Btn3)
+
 # ==================== Funciones para cada laboratorio ====================
+
 def labo1():
     if estado == 1:
         GPIO.output(Led1, GPIO.HIGH)
