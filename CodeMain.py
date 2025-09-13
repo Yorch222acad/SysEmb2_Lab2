@@ -35,12 +35,34 @@ binAnt = -1
 l = [0, 0, 0, 0]
 mnl = 0
 temp = 0
+ejr = 0
+
+# ==================== MAIN ====================
+
+def main():
+    global ejr
+    labos = {1: Ejr1, 2: Ejr2, 3: Ejr3, 4: Ejr4}
+    LsBtn1 = LsBtn2 = LsBtn3 = 1
+    try:
+        for pin in PinsLed:
+            GPIO.output(pin, GPIO.HIGH)
+        ejr = int(input("Ingrese el laboratorio que quiere ejecutar (1-4): "))
+        #-----------------------------------------------------------------------
+        while True:
+            LsBtn1 = dtcBtn1(LsBtn1)
+            LsBtn2 = dtcBtn2(LsBtn2)
+            LsBtn3 = dtcBtn3(LsBtn3)
+            labos[ejr]()  # ejecuta el laboratorio seleccionado
+            time.sleep(0.05)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        GPIO.cleanup()
 
 # ==================== Funciones botones ====================
-# global estado, estado_led, tiempo, opcion, counter, binAnt, l, mnl, temp
 
-def dtcBtn1(ejr):
-    LsBtn1 = 1
+def dtcBtn1(LsBtn1):
+    global estado, counter, mnl, temp, estado_led, tiempo
     if GPIO.input(Btn1) == GPIO.LOW and LsBtn1 == 1:
         if ejr==1:
             estado += 1
@@ -60,34 +82,36 @@ def dtcBtn1(ejr):
             tiempo = 1
             print(f"Estado de LED: {estado_led}")
     LsBtn1 = GPIO.input(Btn1)
+    return LsBtn1
 #------------------------------------------------------------
-def dtcBtn2():
-    LsBtn2 = 1
+def dtcBtn2(LsBtn2):
+    global counter, mnl, temp, tiempo
     # === BOTON 2 ===
     if GPIO.input(Btn2) == GPIO.LOW and LsBtn2 == 1:
-        if opcion == 2 and counter < 15:
+        if ejr == 2 and counter < 15:
             counter += 1
             print(f"Counter = {counter}")
-        elif opcion==3:
+        elif ejr==3:
             mnl=3
             temp=5
-        elif opcion==4:
+        elif ejr==4:
             tiempo+=1
             print(f"Tiempo aumentado a: {tiempo}")
     LsBtn2 = GPIO.input(Btn2)
+    return LsBtn2
 #------------------------------------------------------------
-def dtcBtn3():
-    LsBtn3 = 1
+def dtcBtn3(LsBtn3):
+    global ejr
     # === BOTON 3 ===
     if GPIO.input(Btn3) == GPIO.LOW and LsBtn3 == 1:
-        opcion = int(input("Ingrese el laboratorio que quiere ejecutar (1-4): "))
-        print(f"Seleccionaste laboratorio {opcion}")
+        ejr = int(input("Ingrese el laboratorio que quiere ejecutar (1-4): "))
+        print(f"Seleccionaste laboratorio {ejr}")
     LsBtn3 = GPIO.input(Btn3)
-
+    return LsBtn3
 # ==================== Funciones para cada laboratorio ====================
 
 def Ejr1():
-    LsBtn3 = 1
+    global estado
     if estado == 1:
         GPIO.output(Led1, GPIO.HIGH)
         GPIO.output(Led2, GPIO.LOW)
@@ -116,12 +140,11 @@ def Ejr2():
     global counter, binAnt, l
     if counter != binAnt:
         l = [0, 0, 0, 0]
-        temp = counter
+        tmp = counter
         for j in range(3, -1, -1):
-            l[j] = temp % 2
-            temp //= 2
+            l[j] = tmp % 2
+            tmp //= 2
         binAnt = counter
-
     for idx, pin in enumerate(PinsLed):
         GPIO.output(pin, GPIO.HIGH if l[idx] else GPIO.LOW)
 
@@ -146,6 +169,7 @@ def Ejr3():
     time.sleep(1)
 
 def Ejr4():
+    global estado_led, tiempo
     if estado_led == 1:
         GPIO.output(Led1, GPIO.HIGH)
 
@@ -165,19 +189,5 @@ def Ejr4():
     GPIO.output(Led4, GPIO.LOW)
     time.sleep(0.5)
 
-# ==================== MAIN ====================
-
-labos = {1: Ejr1, 2: Ejr2, 3: Ejr3, 4: Ejr4}
-ejr = int(input("Ingrese el laboratorio que quiere ejecutar (1-4): "))
-
-try:
-    while True:
-        dtcBtn1(ejr)
-        dtcBtn2(ejr)
-        dtcBtn3(ejr)
-        labos[ejr]()  # ejecuta el laboratorio seleccionado
-        time.sleep(0.1)
-except KeyboardInterrupt:
-    pass
-finally:
-    GPIO.cleanup()
+if __name__ == "__main__":
+    main()
