@@ -122,14 +122,14 @@ def Ejr1():
     if estado == 1 and h1_1==True:
         GPIO.output(Led1, GPIO.HIGH)
         GPIO.output(Led2, GPIO.LOW)
-        interactiveDelay(1)
+        interactiveDelay(1.0)
         if tIter==0:
             h1_1=False
             h1_2=True
     elif estado == 1 and h1_2==True:
         GPIO.output(Led1, GPIO.LOW)
         GPIO.output(Led2, GPIO.HIGH)
-        interactiveDelay(1)
+        interactiveDelay(1.0)
         if tIter==0:
             h1_1=True
             h1_2=False
@@ -137,14 +137,14 @@ def Ejr1():
     elif estado == 2 and h2_1==True:
         GPIO.output(Led1, GPIO.HIGH)
         GPIO.output(Led2, GPIO.HIGH)
-        interactiveDelay(2)
+        interactiveDelay(2.0)
         if tIter==0:
             h2_1=False
             h2_2=True
     elif estado == 2 and h2_2==True:
         GPIO.output(Led1, GPIO.LOW)
         GPIO.output(Led2, GPIO.LOW)
-        interactiveDelay(2)
+        interactiveDelay(2.0)
         if tIter==0:
             h1_1=True
             h1_2=False
