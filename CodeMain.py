@@ -34,8 +34,13 @@ counter = 0
 binAnt = -1
 l = [0, 0, 0, 0]
 mnl = 0
-temp = 0
+temp = 0 # temperatura
 ejr = 0
+tIter = 0.0
+h1_1 = True
+h1_2 = False
+h2_1 = True
+h2_2 = False
 
 # ==================== MAIN ====================
 
@@ -45,7 +50,7 @@ def main():
     LsBtn1 = LsBtn2 = LsBtn3 = 1
     try:
         for pin in PinsLed:
-            GPIO.output(pin, GPIO.HIGH)
+            GPIO.output(pin, GPIO.LOW)
         ejr = int(input("Ingrese el laboratorio que quiere ejecutar (1-4): "))
         #-----------------------------------------------------------------------
         while True:
@@ -73,7 +78,7 @@ def dtcBtn1(LsBtn1):
             counter -= 1
             print(f"Counter = {counter}")
         elif ejr==3:
-            mnl=3
+            mnl=5
             temp=25
         elif ejr==4:
             estado_led += 1
@@ -92,7 +97,7 @@ def dtcBtn2(LsBtn2):
             counter += 1
             print(f"Counter = {counter}")
         elif ejr==3:
-            mnl=3
+            mnl=5
             temp=5
         elif ejr==4:
             tiempo+=1
@@ -104,6 +109,8 @@ def dtcBtn3(LsBtn3):
     global ejr
     # === BOTON 3 ===
     if GPIO.input(Btn3) == GPIO.LOW and LsBtn3 == 1:
+        for pin in PinsLed:
+            GPIO.output(pin, GPIO.LOW)
         ejr = int(input("Ingrese el laboratorio que quiere ejecutar (1-4): "))
         print(f"Seleccionaste laboratorio {ejr}")
     LsBtn3 = GPIO.input(Btn3)
@@ -111,22 +118,36 @@ def dtcBtn3(LsBtn3):
 # ==================== Funciones para cada laboratorio ====================
 
 def Ejr1():
-    global estado
-    if estado == 1:
+    global estado, h1_1, h1_2, h2_1, h2_2
+    if estado == 1 and h1_1==True:
         GPIO.output(Led1, GPIO.HIGH)
         GPIO.output(Led2, GPIO.LOW)
-        time.sleep(1)
+        interactiveDelay(1)
+        if tIter==0:
+            h1_1=False
+            h1_2=True
+    elif estado == 1 and h1_2==True:
         GPIO.output(Led1, GPIO.LOW)
         GPIO.output(Led2, GPIO.HIGH)
-        time.sleep(1)
+        interactiveDelay(1)
+        if tIter==0:
+            h1_1=True
+            h1_2=False
 
-    elif estado == 2:
+    elif estado == 2 and h2_1==True:
         GPIO.output(Led1, GPIO.HIGH)
         GPIO.output(Led2, GPIO.HIGH)
-        time.sleep(2)
+        interactiveDelay(2)
+        if tIter==0:
+            h2_1=False
+            h2_2=True
+    elif estado == 2 and h2_2==True:
         GPIO.output(Led1, GPIO.LOW)
         GPIO.output(Led2, GPIO.LOW)
-        time.sleep(2)
+        interactiveDelay(2)
+        if tIter==0:
+            h1_1=True
+            h1_2=False
 
     elif estado == 3:
         GPIO.output(Led1, GPIO.HIGH)
@@ -188,6 +209,16 @@ def Ejr4():
     GPIO.output(Led3, GPIO.LOW)
     GPIO.output(Led4, GPIO.LOW)
     time.sleep(0.5)
+
+# ====================================================
+
+def interactiveDelay(time_sec):
+    global tIter
+    TotalTimeIter = int(time_sec*10)
+    if tIter==0:
+        tIter=TotalTimeIter
+    time.sleep(0.1)
+    tIter-=1
 
 if __name__ == "__main__":
     main()
