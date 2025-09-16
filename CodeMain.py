@@ -29,7 +29,8 @@ GPIO.setup(Vent, GPIO.OUT)
 # Variables globales
 estado = 1
 estado_led = 1
-tiempo = 1
+antEstado_led = 1
+tiempo = 1.0
 counter = 0
 binAnt = -1
 l = [0, 0, 0, 0]
@@ -84,7 +85,7 @@ def dtcBtn1(LsBtn1):
             estado_led += 1
             if estado_led > 4:
                 estado_led = 1
-            tiempo = 1
+            tiempo = 1.0
             print(f"Estado de LED: {estado_led}")
     LsBtn1 = GPIO.input(Btn1)
     return LsBtn1
@@ -100,7 +101,7 @@ def dtcBtn2(LsBtn2):
             mnl=5
             temp=5
         elif ejr==4:
-            tiempo+=1
+            tiempo+=1.0
             print(f"Tiempo aumentado a: {tiempo}")
     LsBtn2 = GPIO.input(Btn2)
     return LsBtn2
@@ -126,6 +127,7 @@ def Ejr1():
         if tIter==0:
             h1_1=False
             h1_2=True
+    #------------------------------------
     elif estado == 1 and h1_2==True:
         GPIO.output(Led1, GPIO.LOW)
         GPIO.output(Led2, GPIO.HIGH)
@@ -133,7 +135,7 @@ def Ejr1():
         if tIter==0:
             h1_1=True
             h1_2=False
-
+    #------------------------------------
     elif estado == 2 and h2_1==True:
         GPIO.output(Led1, GPIO.HIGH)
         GPIO.output(Led2, GPIO.HIGH)
@@ -141,6 +143,7 @@ def Ejr1():
         if tIter==0:
             h2_1=False
             h2_2=True
+    #------------------------------------
     elif estado == 2 and h2_2==True:
         GPIO.output(Led1, GPIO.LOW)
         GPIO.output(Led2, GPIO.LOW)
@@ -148,11 +151,11 @@ def Ejr1():
         if tIter==0:
             h2_1=True
             h2_2=False
-
+    #------------------------------------
     elif estado == 3:
         GPIO.output(Led1, GPIO.HIGH)
         GPIO.output(Led2, GPIO.HIGH)
-
+    #------------------------------------
     elif estado == 4:
         GPIO.output(Led1, GPIO.LOW)
         GPIO.output(Led2, GPIO.LOW)
@@ -191,25 +194,38 @@ def Ejr3():
     interactiveDelay(1.0)
 
 def Ejr4():
-    global estado_led, tiempo
-    if estado_led == 1:
-        GPIO.output(Led1, GPIO.HIGH)
-
-    elif estado_led == 2:
-        GPIO.output(Led2, GPIO.HIGH)
-
-    elif estado_led == 3:
-        GPIO.output(Led3, GPIO.HIGH)
-
-    elif estado_led == 4:
-        GPIO.output(Led4, GPIO.HIGH)
-
-    time.sleep(tiempo)
-    GPIO.output(Led1, GPIO.LOW)
-    GPIO.output(Led2, GPIO.LOW)
-    GPIO.output(Led3, GPIO.LOW)
-    GPIO.output(Led4, GPIO.LOW)
-    time.sleep(0.5)
+    global estado_led, tiempo, antEstado_led, tIter
+    if tIter==0  or  antEstado_led != estado_led:
+        tIter = 0
+        antEstado_led = estado_led
+        if estado_led == 1:
+            for pin in PinsLed:
+                GPIO.output(pin, GPIO.LOW)
+            GPIO.output(Led1, GPIO.HIGH)
+        #------------------------------------
+        elif estado_led == 2:
+            for pin in PinsLed:
+                GPIO.output(pin, GPIO.LOW)
+            GPIO.output(Led2, GPIO.HIGH)
+        #------------------------------------
+        elif estado_led == 3:
+            for pin in PinsLed:
+                GPIO.output(pin, GPIO.LOW)
+            GPIO.output(Led3, GPIO.HIGH)
+        #------------------------------------
+        elif estado_led == 4:
+            for pin in PinsLed:
+                GPIO.output(pin, GPIO.LOW)
+            GPIO.output(Led4, GPIO.HIGH)
+    interactiveDelay(tiempo)
+    if tIter!=0:
+        return
+    else:
+        GPIO.output(Led1, GPIO.LOW)
+        GPIO.output(Led2, GPIO.LOW)
+        GPIO.output(Led3, GPIO.LOW)
+        GPIO.output(Led4, GPIO.LOW)
+        time.sleep(0.25)
 
 # ====================================================
 
