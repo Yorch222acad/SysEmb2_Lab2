@@ -146,8 +146,8 @@ def Ejr1():
         GPIO.output(Led2, GPIO.LOW)
         interactiveDelay(2.0)
         if tIter==0:
-            h1_1=True
-            h1_2=False
+            h2_1=True
+            h2_2=False
 
     elif estado == 3:
         GPIO.output(Led1, GPIO.HIGH)
@@ -171,23 +171,24 @@ def Ejr2():
 
 def Ejr3():
     global mnl, temp
-    if mnl==0:
-        temp = random.randint(5, 25)
-    else:
-        mnl-=1
-    #---------------------------------
-    if temp < 12:
-        GPIO.output(Led1, GPIO.HIGH)
-        GPIO.output(Vent, GPIO.LOW)
-    elif temp > 20:
-        GPIO.output(Vent, GPIO.HIGH)
-        GPIO.output(Led1, GPIO.LOW)
-    else:
-        GPIO.output(Led1, GPIO.LOW)
-        GPIO.output(Vent, GPIO.LOW)
+    if tIter == 0:
+        if mnl==0:
+            temp = random.randint(5, 25)
+        else:
+            mnl-=1
+        #---------------------------------
+        if temp < 12:
+            GPIO.output(Led1, GPIO.HIGH)
+            GPIO.output(Vent, GPIO.LOW)
+        elif temp > 20:
+            GPIO.output(Vent, GPIO.HIGH)
+            GPIO.output(Led1, GPIO.LOW)
+        else:
+            GPIO.output(Led1, GPIO.LOW)
+            GPIO.output(Vent, GPIO.LOW)
 
-    print(f"La temperatura es {temp}")
-    time.sleep(1)
+        print(f"La temperatura es {temp}")
+    interactiveDelay(1.0)
 
 def Ejr4():
     global estado_led, tiempo
